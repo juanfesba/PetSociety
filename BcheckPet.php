@@ -113,3 +113,49 @@ $conn->close();
 </body>
 </html>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if ($val1 == "1"){
+    $sql = "INSERT INTO Pets (ID_Usuario,pass_Usuario,NombreAnimal,Tipo,Size,Edad,Descripcion,Sexo,Cuidados,Vacunado,Raza,Foto)
+    VALUES ('$usern','$pass','$animalname','$animaltype','$size','$edad','$description','$sexo','$cuidado','$vacunado','$breed','$controlfile')";
+    $sql1 = "SELECT ID FROM Pets ORDER BY ID DESC LIMIT 1";
+    //echo "<script>window.alert('" . $sql1 . $usern . "');</script>";
+    if ($conn->query($sql) === TRUE){
+// Check connection
+        //$idPet = mysqli_query($conn,$sql1);
+        
+        //$sql2 = "INSERT INTO PetsxUser (petID, userID) VALUES ('$idPet','$usern')";
+        echo "<script>window.alert('Se actualizó correctamente');</script>";
+        $result=$conn->query($sql1);
+        //echo "<script>location.replace('index.html');</script>";
+            if ($result->num_rows >0){
+                while($row = $result->fetch_assoc()) {
+                    echo "ID: " . $row["ID"]. "<br>";
+                }
+            }
+            else {
+                echo "Error en sql1: ". $conn->error;
+            }
+        }
+        else {    
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+}

@@ -19,7 +19,6 @@ $description=$_POST["description"];
 $cuidado=$_POST["cuidado"];
 $sexo=$_POST["sexo"];
 $vacunado=$_POST["vacunado"];
-$controlfile=$_POST["photo"];
 
 $filename="None";
 
