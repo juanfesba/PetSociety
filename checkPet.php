@@ -2,13 +2,16 @@
 <body>
 
 <?php
+session_start();
+?>
+
+<?php
 $servername = "198.71.225.57";
 $username = "granescala";
 $password = "Granescala.123";
 $dbname = "GE";
 
-$usern=$_POST["usern"];
-$pass=$_POST["pass"];
+$user = $_SESSION["id"];
 $animaltype=$_POST["animaltype"];
 $animalname=$_POST["animalname"];
 $breed=$_POST["breed"];
@@ -19,9 +22,10 @@ $description=$_POST["description"];
 $cuidado=$_POST["cuidado"];
 $sexo=$_POST["sexo"];
 $vacunado=$_POST["vacunado"];
-
+$estado=$_POST["estado"];
 $filename="None";
-
+$precio=$_POST["precio"];
+$tiempo=$_POST["tiempo"];
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Check connection
@@ -37,15 +41,11 @@ $val1 = "0";
 $val2 = "0";
 $sql = "SELECT * FROM Users";
 $result = $conn->query($sql);
-$usercheck = mysqli_query($conn,"SELECT * FROM `Users` WHERE usern = '".$usern."' and passwrd = '".$pass."' ");
 
-if (mysqli_num_rows($usercheck) == 1) {
-    $val1 = "1";
-} 
 //echo $usercheck;
 // Check if the form was submitted
 
-if($_SERVER["REQUEST_METHOD"] == "POST" && $val1=="1"){
+if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Check if file was uploaded without errors
     if(isset($_FILES["photo"]) && $_FILES["photo"]["error"] == 0){
         $allowed = array("jpg" => "image/jpg", "jpeg" => "image/jpeg", "gif" => "image/gif", "png" => "image/png");
@@ -81,29 +81,45 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && $val1=="1"){
         echo "Error3: " . $_FILES["photo"]["error"];
     }
 }
+//$usercheck2 = mysqli_query($conn,"SELECT Id_User FROM `Users` WHERE UserName = '".$."'");
 
-if ($val1 == "1"){
-    $sql = "INSERT INTO Pets (ID_Usuario,pass_Usuario,NombreAnimal,Tipo,Size,Edad,Descripcion,Sexo,Cuidados,Vacunado,Raza,Foto)
-    VALUES ('$usern','$pass','$animalname','$animaltype','$size','$edad','$description','$sexo','$cuidado','$vacunado','$breed','$filename')";
-    echo "<script>window.alert('Se creó con éxito la mascota');";
+
+
+$sql = "INSERT INTO Pets (Id_User,Id_Breed,Tipo,Animal,Edad,Tamanio,Descripcion,CuidadosEsp,Foto,Vacunado,Sexo,Estado) VALUES ('$user','$breed','$animaltype','$animalname','$edad','$size','$description','$cuidado','$filename','$vacunado','$sexo','$estado')";
+
     /*$sql1 = "SELECT ID FROM Pets ORDER BY ID DESC LIMIT 1";
     //echo "<script>window.alert('" . $sql1 . $usern . "');</script>";*/
-    if ($conn->query($sql) === TRUE){
+if ($conn->query($sql) === TRUE){
 // Check connection
         //$idPet = mysqli_query($conn,$sql1);
-        echo "<script>window.alert('Se creó con éxito la mascota');location.replace('registroMascota.html');</script>";
+    if ($estado == 0){
+        $sql3 = "SELECT MAX(Id_Pet) FROM Pets WHERE Id_User = '".$user."'";
+        $resultado = mysqli_query($conn, $sql3);
+        $fila = mysqli_fetch_row($resultado);
+        $pet = $fila[0];
+        $sql2 = "INSERT INTO Adoption (Id_User,Id_Pet) VALUES ('$user','$pet')";
+        mysqli_query($conn, $sql2);
+    }
+    elseif ($estado == 1){
+        $sql3 = "SELECT MAX(Id_Pet) FROM Pets WHERE Id_User = '".$user."'";
+        $resultado = mysqli_query($conn, $sql3);
+        $fila = mysqli_fetch_row($resultado);
+        $pet = $fila[0];
+        $sql2 = "INSERT INTO Sale (Id_User,Precio,Id_Pet) VALUES ('$user','$precio','$pet')";
+        mysqli_query($conn, $sql2);
     }
     else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        $sql3 = "SELECT MAX(Id_Pet) FROM Pets WHERE Id_User = '".$user."'";
+        $resultado = mysqli_query($conn, $sql3);
+        $fila = mysqli_fetch_row($resultado);
+        $pet = $fila[0];
+        $sql2 = "INSERT INTO Auction (Id_Pet,Id_User,MinPrice,Tiempo,Activo) VALUES ('$pet','$user','$precio','$tiempo','1')";
+        mysqli_query($conn, $sql2);
     }
+    //echo "<script>window.alert('Se creó con éxito la mascota');";
+    //session_destroy();
+    header("location:loggedIn.php");
 }
-else {
-    echo "<script>window.alert('No se pudo actualizar la información, ya que el usuario y la contraseña no son correctas');</script>";
-    echo "<script>location.replace('registroMascota.html');</script>";
-}
-
-
-
 
 $conn->close();
 ?>
@@ -111,4 +127,3 @@ $conn->close();
 
 </body>
 </html>
-
