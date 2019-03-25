@@ -1,3 +1,10 @@
+<?php
+session_start();
+if ($_SESSION["id"] == -1) {
+	header("location:Login.php");
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -158,8 +165,8 @@
     					<span class="label-input100">Sexo</span>
 	    				<select class="selectpicker" name="sexo" id="sexo">
 	    					<option value="" selected disabled>Escoge uno</option>
-		        			<option value="1">Hembra</option>
-		        			<option value="0">Macho</option>
+		        			<option value="F">Hembra</option>
+		        			<option value="M">Macho</option>
 	    				</select>
 
 					</div>
@@ -178,7 +185,29 @@
 
 					<div>
 
-					
+
+					<div class="form-group">
+    					<span class="label-input100">Estado</span>
+	    					<select class="selectpicker" name="estado" id="estado">
+	    						<option value="" selected disabled>Escoge uno</option>
+		        				<option value="0">Adopción</option>
+		        				<option value="1">Venta</option>
+		        				<option value="2">Subasta</option>
+	    					</select>
+					</div>
+
+
+					<div class="wrap-input100 validate-input" data-validate="Nombre de Animal es requerido">
+						<span class="label-input100">Si escogiste Venta o Subasta pon un precio </span>
+						<input class="input100" type="text" pattern="[0-9].{2,}" id="precio" name="precio" placeholder="Ej. 100000">
+						<span class="focus-input100"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate="Nombre de Animal es requerido">
+						<span class="label-input100">Si escogiste Subasta pon un tiempo (En minutos) </span>
+						<input class="input100" type="text" pattern="[0-9].{1,}" id="tiempo" name="tiempo" placeholder="Ej. 30">
+						<span class="focus-input100"></span>
+					</div>
 					<!--<form method="POST" action="#" enctype="multipart/form-data">-->
 						<div class="form-group">
 							<span class="label-input100">Subir imagen (opcional)</span>
@@ -205,8 +234,8 @@
 							</button>
 						</div>
 
-						<a href="index.html" class="dis-block txt3 hov1 p-r-30 p-t-10 p-b-10 p-l-30">
-							Inicio
+						<a href="loggedIn.php" class="dis-block txt3 hov1 p-r-30 p-t-10 p-b-10 p-l-30">
+							Atrás
 							<i class="fa fa-long-arrow-right m-l-5"></i>
 						</a>
 					</div>
